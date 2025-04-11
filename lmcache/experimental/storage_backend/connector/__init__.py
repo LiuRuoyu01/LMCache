@@ -24,6 +24,8 @@ from lmcache.experimental.storage_backend.connector.lm_connector import \
     LMCServerConnector
 from lmcache.experimental.storage_backend.connector.redis_connector import (
     RedisConnector, RedisSentinelConnector)
+from lmcache.experimental.storage_backend.connector.dingostore_connector import (
+    DingoStoreConnector)
 from lmcache.logging import init_logger
 
 from .blackhole_connector import BlackholeConnector
@@ -168,6 +170,12 @@ def CreateConnector(
                                                memory_allocator)
         case "blackhole":
             connector = BlackholeConnector(memory_allocator)
+        case "dingostore":
+            connector= DingoStoreConnector(
+                list(zip(parsed_url.hosts, parsed_url.ports)),
+                loop,
+                memory_allocator,
+            )
         case _:
             raise ValueError(f"Unknown connector type {connector_type} "
                              f"(url is: {url})")
